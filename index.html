@@ -365,7 +365,11 @@ body.night #dim { opacity: 0.1; border-color: rgba(255,255,255,0.12); }
       if (!r.ok) throw new Error('HTTP ' + r.status);
       return r.text();
     }).then(function (svg) {
-      svg = svg.split('#023557').join('#9ec9f2');
+      // night moon fill: dark navy -> light blue; dark outline strokes that
+      // read as a border on the black page -> transparent
+      svg = svg.split('stroke:#023557').join('stroke:rgba(0,0,0,0)')
+               .split('stroke:#062845').join('stroke:rgba(0,0,0,0)')
+               .split('#023557').join('#9ec9f2');
       wIconEl.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
     }).catch(function () {
       wIconEl.src = url;
