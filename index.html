@@ -66,11 +66,6 @@ header {
   color: var(--c-cond, #bbb);
   margin-left: 0.15em;
 }
-.w-cond {
-  font-size: 2.6vmin;
-  color: var(--c-cond, #ddd);
-  margin-top: 1.1vmin;
-}
 .w-meta {
   font-size: 1.8vmin;
   color: var(--c-meta, #777);
@@ -327,8 +322,7 @@ body.glitch:not(.night) #shade { opacity: 0.4; }
       <img id="w-icon" alt="" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3C/svg%3E">
       <div>
         <div class="w-temp"><span id="w-temp">&ndash;</span><span class="deg">&deg;C</span></div>
-        <div class="w-cond" id="w-cond">&nbsp;</div>
-        <div class="w-meta" id="w-meta">meteoblue &middot; Ciarda Rosie</div>
+        <div class="w-meta" id="w-meta">meteoblue</div>
       </div>
     </section>
 
@@ -420,7 +414,7 @@ body.glitch:not(.night) #shade { opacity: 0.4; }
   function el(id) { return document.getElementById(id); }
   var hhEl = el('hh'), mmEl = el('mm'), ssEl = el('ss');
   var dateEl = el('date'), clockEl = el('clock');
-  var wTempEl = el('w-temp'), wCondEl = el('w-cond'), wMetaEl = el('w-meta'), wIconEl = el('w-icon');
+  var wTempEl = el('w-temp'), wMetaEl = el('w-meta'), wIconEl = el('w-icon');
   var sunriseEl = el('sunrise'), sunsetEl = el('sunset');
 
   function pad(n) { return n < 10 ? '0' + n : '' + n; }
@@ -558,12 +552,13 @@ body.glitch:not(.night) #shade { opacity: 0.4; }
 
   function renderWeather(data) {
     if (data.tempC !== null && data.tempC !== undefined) wTempEl.textContent = data.tempC;
-    if (data.condition) wCondEl.textContent = data.condition;
     if (data.picto) setWeatherIcon(data.picto);
-    var meta = 'meteoblue \u00b7 Ciarda Rosie';
-    if (typeof data.windKmh === 'number') meta = 'wind ' + data.windKmh + ' km/h \u00b7 ' + meta;
-    var upd = data.fetchedAt ? ' \u00b7 updated ' + pad(new Date(data.fetchedAt).getHours()) + ':' + pad(new Date(data.fetchedAt).getMinutes()) : '';
-    wMetaEl.textContent = meta + upd;
+    if (data.fetchedAt) {
+      var d = new Date(data.fetchedAt);
+      wMetaEl.textContent = 'updated ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+    } else {
+      wMetaEl.textContent = 'meteoblue';
+    }
     applySun();
   }
 
