@@ -133,8 +133,9 @@ header {
 #ss { font-size: 0.5em; margin-left: 0.25em; }
 #date {
   text-align: right;
+  font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
   font-size: 7.2vmin;
-  font-weight: 300;
+  font-weight: bold;
   color: #a5a5a5;
   margin-top: 2.2vmin;
   letter-spacing: 0.08em;
@@ -155,11 +156,15 @@ body.night #clock {
   text-shadow: 0 0 14px rgba(255, 255, 255, 0.06);
 }
 
-/* ---- dim toggle, bottom left ---- */
-#dim {
+/* ---- discrete buttons, bottom left ---- */
+#ctrls {
   position: fixed;
   left: 3.2vmin;
   bottom: 3.2vmin;
+  z-index: 10;
+  display: flex;
+}
+#ctrls button {
   width: 5.4vmin;
   height: 5.4vmin;
   min-width: 40px;
@@ -172,14 +177,81 @@ body.night #clock {
   align-items: center;
   justify-content: center;
   opacity: 0.26;
-  z-index: 10;
   cursor: pointer;
   transition: opacity 1s ease, background 1s ease;
   padding: 0;
 }
-#dim svg { width: 55%; height: 55%; }
-#dim:active { background: rgba(255, 255, 255, 0.12); }
-body.night #dim { opacity: 0.1; border-color: rgba(255,255,255,0.12); }
+#ctrls button + button { margin-left: 1.8vmin; }
+#ctrls button svg { width: 55%; height: 55%; }
+#ctrls button:active { background: rgba(255, 255, 255, 0.12); }
+body.night #ctrls button { opacity: 0.1; border-color: rgba(255,255,255,0.12); }
+
+/* ---- glitch mode ---- */
+#glitch-veil {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: repeating-linear-gradient(0deg,
+    rgba(0, 0, 0, 0.5) 0px, rgba(0, 0, 0, 0.5) 2px,
+    rgba(0, 0, 0, 0) 2px, rgba(0, 0, 0, 0) 4px);
+  z-index: 8;
+}
+#glitch-veil:after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  top: 12%;
+  height: 12px;
+  background: rgba(140, 220, 255, 0.18);
+  opacity: 0;
+}
+body.glitch #glitch-veil {
+  animation: glVeilFlicker 2.9s steps(1) infinite;
+}
+body.glitch #glitch-veil:after {
+  animation: glSlice 3.1s steps(1) infinite;
+}
+body.glitch #stage {
+  animation: glJitter 2.3s steps(1) infinite;
+  filter: saturate(0.72) contrast(1.06);
+}
+body.glitch #clock {
+  text-shadow: -0.02em 0 rgba(255, 0, 80, 0.55), 0.02em 0 rgba(0, 220, 255, 0.45);
+}
+body.glitch:not(.night) #shade { opacity: 0.4; }
+
+@keyframes glVeilFlicker {
+  0%   { opacity: 1; }
+  8%   { opacity: 0.55; }
+  12%  { opacity: 1; }
+  33%  { opacity: 0.8; }
+  34%  { opacity: 1; }
+  62%  { opacity: 0.4; }
+  63%  { opacity: 1; }
+  100% { opacity: 1; }
+}
+@keyframes glSlice {
+  0%   { top: 12%; opacity: 0.6; }
+  22%  { top: 58%; opacity: 0.9; }
+  23%  { top: 34%; opacity: 0.3; }
+  48%  { top: 76%; opacity: 0.7; }
+  49%  { top: 8%;  opacity: 0; }
+  100% { top: 8%;  opacity: 0; }
+}
+@keyframes glJitter {
+  0%   { transform: none; clip-path: none; }
+  13%  { transform: translateX(-6px); clip-path: none; }
+  14%  { transform: translateX(3px); clip-path: none; }
+  15%  { transform: none; clip-path: none; }
+  38%  { transform: translateX(9px) skewX(-1.5deg); clip-path: none; }
+  41%  { transform: none; clip-path: none; }
+  67%  { transform: translateY(4px); clip-path: inset(18% 0 42% 0); }
+  70%  { transform: none; clip-path: none; }
+  89%  { transform: translateX(-4px); clip-path: inset(52% 0 12% 0); }
+  92%  { transform: none; clip-path: none; }
+  100% { transform: none; clip-path: none; }
+}
 </style>
 </head>
 <body>
@@ -221,11 +293,23 @@ body.night #dim { opacity: 0.1; border-color: rgba(255,255,255,0.12); }
 
 <div id="shade" aria-hidden="true"></div>
 
-<button id="dim" aria-label="Toggle night dimming" aria-pressed="false">
-  <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>
-  </svg>
-</button>
+<div id="glitch-veil" aria-hidden="true"></div>
+
+<div id="ctrls">
+  <button id="dim" aria-label="Toggle night dimming" aria-pressed="false">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>
+    </svg>
+  </button>
+  <button id="glitchy" aria-label="Toggle glitch mode" aria-pressed="false">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+      <path d="M3 8h18"/>
+      <path d="M5 13h8"/>
+      <path d="M16 13h5"/>
+      <path d="M3 18h18"/>
+    </svg>
+  </button>
+</div>
 
 <script>
 (function () {
@@ -240,6 +324,7 @@ body.night #dim { opacity: 0.1; border-color: rgba(255,255,255,0.12); }
   var WEATHER_MAX_AGE = 65 * 60 * 1000;  // in the worst case a scrape lands 5 min past the hour
   var CACHE_KEY = 'wallclock.weather.v1';
   var NIGHT_KEY = 'wallclock.night.v1';
+  var GLITCH_KEY = 'wallclock.glitch.v1';
 
   var weatherTimer = null;
   var cachedWeather = null;
@@ -438,9 +523,10 @@ body.night #dim { opacity: 0.1; border-color: rgba(255,255,255,0.12); }
     });
   }
 
-  // ---------- night dim ----------
+  // ---------- night dim & glitch ----------
 
   var dimBtn = el('dim');
+  var glitchBtn = el('glitchy');
 
   function setNight(on) {
     document.body.classList[on ? 'add' : 'remove']('night');
@@ -452,6 +538,16 @@ body.night #dim { opacity: 0.1; border-color: rgba(255,255,255,0.12); }
     setNight(!document.body.classList.contains('night'));
   });
 
+  function setGlitch(on) {
+    document.body.classList[on ? 'add' : 'remove']('glitch');
+    glitchBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    try { localStorage.setItem(GLITCH_KEY, on ? '1' : '0'); } catch (e) {}
+  }
+
+  glitchBtn.addEventListener('click', function () {
+    setGlitch(!document.body.classList.contains('glitch'));
+  });
+
   // ---------- boot ----------
 
   sizeClock();
@@ -459,6 +555,7 @@ body.night #dim { opacity: 0.1; border-color: rgba(255,255,255,0.12); }
 
   try {
     if (localStorage.getItem(NIGHT_KEY) === '1') setNight(true);
+    if (localStorage.getItem(GLITCH_KEY) === '1') setGlitch(true);
   } catch (e) {}
 
   var cached = loadStored();
