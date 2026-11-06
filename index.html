@@ -403,6 +403,7 @@ body.glitch:not(.night) #shade { opacity: 0.4; }
   var MB_PAGE = 'https://www.meteoblue.com/en/weather/forecast/current/ciarda-ro%C8%99ie_romania_681965';
   var READER = 'https://r.jina.ai/' + MB_PAGE;
   var RETRY_PERIOD = 5 * 60 * 1000;      // retry sooner on failure (plus jitter)
+  var FRESH_WINDOW = 15 * 60 * 1000;     // localStorage cache considered fresh for this long
   var WEATHER_MAX_AGE = 65 * 60 * 1000;  // in the worst case a scrape lands 5 min past the hour
   var CACHE_KEY = 'wallclock.weather.v1';
   var NIGHT_KEY = 'wallclock.night.v1';
@@ -679,7 +680,13 @@ body.glitch:not(.night) #shade { opacity: 0.4; }
   tick();
   setInterval(tick, 250);
 
-  fetchWeather();
+  // cached data younger than FRESH_WINDOW: skip the boot scrape,
+  // wait for the next jittered hourly slot instead
+  if (cached && (Date.now() - cached.fetchedAt) < FRESH_WINDOW) {
+    schedule(nextHourlyDelay());
+  } else {
+    fetchWeather();
+  }
   document.addEventListener('visibilitychange', function () {
     if (document.visibilityState === 'visible') {
       var stale = !cachedWeather || (Date.now() - cachedWeather.fetchedAt) > WEATHER_MAX_AGE;
