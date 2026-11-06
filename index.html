@@ -165,7 +165,15 @@ body.night #clock {
   z-index: 10;
   display: flex;
 }
-#ctrls button {
+#rctrls {
+  position: fixed;
+  right: 3.2vmin;
+  bottom: 3.2vmin;
+  z-index: 10;
+  display: flex;
+}
+#ctrls button,
+#rctrls button {
   width: 5.4vmin;
   height: 5.4vmin;
   min-width: 40px;
@@ -183,9 +191,13 @@ body.night #clock {
   padding: 0;
 }
 #ctrls button + button { margin-left: 1.8vmin; }
-#ctrls button svg { width: 55%; height: 55%; }
-#ctrls button:active { background: rgba(255, 255, 255, 0.12); }
-body.night #ctrls button { opacity: 0.1; border-color: rgba(255,255,255,0.12); }
+#rctrls button + button { margin-left: 1.8vmin; }
+#ctrls button svg,
+#rctrls button svg { width: 55%; height: 55%; }
+#ctrls button:active,
+#rctrls button:active { background: rgba(255, 255, 255, 0.12); }
+body.night #ctrls button,
+body.night #rctrls button { opacity: 0.1; border-color: rgba(255,255,255,0.12); }
 
 /* ---- glitch mode ---- */
 #glitch-veil {
@@ -368,6 +380,15 @@ body.glitch:not(.night) #shade { opacity: 0.4; }
       <circle cx="16.5" cy="9" r="1.4" fill="currentColor" stroke="none"/>
       <circle cx="8" cy="10" r="1.4" fill="currentColor" stroke="none"/>
       <circle cx="10.5" cy="15.5" r="1.4" fill="currentColor" stroke="none"/>
+    </svg>
+  </button>
+</div>
+
+<div id="rctrls">
+  <button id="refresher" aria-label="Reload page">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12a9 9 0 1 1-2.64-6.36"/>
+      <path d="M21 3v6h-6"/>
     </svg>
   </button>
 </div>
@@ -631,6 +652,12 @@ body.glitch:not(.night) #shade { opacity: 0.4; }
 
   themeBtn.addEventListener('click', function () {
     applyTheme(themeIndex + 1);
+  });
+
+  // ---------- reload ----------
+
+  el('refresher').addEventListener('click', function () {
+    location.reload();
   });
 
   // ---------- boot ----------
