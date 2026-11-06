@@ -57,22 +57,23 @@ header {
   font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
   font-size: 13vmin;
   font-weight: bold;
+  color: var(--c-temp, #f0f0f0);
   line-height: 1;
   letter-spacing: 0.02em;
 }
 .w-temp .deg {
   font-size: 0.45em;
-  color: #bbb;
+  color: var(--c-cond, #bbb);
   margin-left: 0.15em;
 }
 .w-cond {
   font-size: 2.6vmin;
-  color: #ddd;
+  color: var(--c-cond, #ddd);
   margin-top: 1.1vmin;
 }
 .w-meta {
   font-size: 1.8vmin;
-  color: #777;
+  color: var(--c-meta, #777);
   margin-top: 0.7vmin;
 }
 
@@ -90,11 +91,11 @@ header {
 .s-glyph {
   font-size: 3.9vmin;
   margin-right: 1vmin;
-  color: #f5a623;
+  color: var(--c-accent, #f5a623);
 }
 .s-lbl {
   font-size: 2.6vmin;
-  color: #888;
+  color: var(--c-meta, #888);
   margin-right: 1.2vmin;
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -103,7 +104,7 @@ header {
   font-family: 'Roboto Light', 'Roboto', Arial, sans-serif;
   font-size: 5.1vmin;
   font-weight: 300;
-  color: #f5a623;
+  color: var(--c-accent, #f5a623);
 }
 
 /* ---- clock and date, center ---- */
@@ -120,14 +121,14 @@ header {
 }
 #clock {
   font-family: 'DSEG7', 'Lucida Console', monospace;
-  color: #c2c2c2;
+  color: var(--c-clock, #c2c2c2);
   text-align: center;
-  text-shadow: 0 0 24px rgba(255, 255, 255, 0.18);
+  text-shadow: var(--c-glow, 0 0 24px rgba(255, 255, 255, 0.18));
   white-space: nowrap;
   transition: text-shadow 1.5s ease;
 }
 #clock .c {
-  color: #6e6e6e;
+  color: var(--c-dots, #6e6e6e);
   text-shadow: none;
 }
 #ss { font-size: 0.5em; margin-left: 0.25em; }
@@ -136,7 +137,7 @@ header {
   font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
   font-size: 7.2vmin;
   font-weight: bold;
-  color: #a5a5a5;
+  color: var(--c-date, #a5a5a5);
   margin-top: 2.2vmin;
   letter-spacing: 0.08em;
 }
@@ -252,6 +253,58 @@ body.glitch:not(.night) #shade { opacity: 0.4; }
   92%  { transform: none; clip-path: none; }
   100% { transform: none; clip-path: none; }
 }
+
+/* ---- color themes (popular dark editor / shell schemes) ---- */
+[data-theme="dracula"] {
+  --c-clock: #bd93f9; --c-glow: 0 0 24px rgba(189, 147, 249, 0.28);
+  --c-dots: #6272a4; --c-date: #f8f8f2; --c-temp: #8be9fd;
+  --c-cond: #f8f8f2; --c-meta: #6272a4; --c-accent: #ff79c6;
+}
+[data-theme="nord"] {
+  --c-clock: #88c0d0; --c-glow: 0 0 24px rgba(136, 192, 208, 0.25);
+  --c-dots: #4c566a; --c-date: #d8dee9; --c-temp: #8fbcbb;
+  --c-cond: #d8dee9; --c-meta: #4c566a; --c-accent: #ebcb8b;
+}
+[data-theme="solarized-dark"] {
+  --c-clock: #268bd2; --c-glow: 0 0 24px rgba(38, 139, 210, 0.3);
+  --c-dots: #586e75; --c-date: #93a1a1; --c-temp: #2aa198;
+  --c-cond: #839496; --c-meta: #586e75; --c-accent: #b58900;
+}
+[data-theme="monokai"] {
+  --c-clock: #66d9ef; --c-glow: 0 0 24px rgba(102, 217, 239, 0.25);
+  --c-dots: #75715e; --c-date: #f8f8f2; --c-temp: #fd971f;
+  --c-cond: #f8f8f2; --c-meta: #75715e; --c-accent: #f92672;
+}
+[data-theme="one-dark"] {
+  --c-clock: #61afef; --c-glow: 0 0 24px rgba(97, 175, 239, 0.25);
+  --c-dots: #5c6370; --c-date: #abb2bf; --c-temp: #98c379;
+  --c-cond: #abb2bf; --c-meta: #5c6370; --c-accent: #e5c07b;
+}
+[data-theme="gruvbox"] {
+  --c-clock: #fabd2f; --c-glow: 0 0 24px rgba(250, 189, 47, 0.25);
+  --c-dots: #928374; --c-date: #ebdbb2; --c-temp: #8ec07c;
+  --c-cond: #ebdbb2; --c-meta: #928374; --c-accent: #fe8019;
+}
+[data-theme="tokyo-night"] {
+  --c-clock: #7aa2f7; --c-glow: 0 0 24px rgba(122, 162, 247, 0.28);
+  --c-dots: #565f89; --c-date: #a9b1d6; --c-temp: #9ece6a;
+  --c-cond: #a9b1d6; --c-meta: #565f89; --c-accent: #e0af68;
+}
+[data-theme="catppuccin-mocha"] {
+  --c-clock: #cba6f7; --c-glow: 0 0 24px rgba(203, 166, 247, 0.28);
+  --c-dots: #6c7086; --c-date: #cdd6f4; --c-temp: #89b4fa;
+  --c-cond: #cdd6f4; --c-meta: #6c7086; --c-accent: #fab387;
+}
+[data-theme="rose-pine"] {
+  --c-clock: #c4a7e7; --c-glow: 0 0 24px rgba(196, 167, 231, 0.28);
+  --c-dots: #6e6a86; --c-date: #e0def4; --c-temp: #9ccfd8;
+  --c-cond: #e0def4; --c-meta: #6e6a86; --c-accent: #eb6f92;
+}
+[data-theme="synthwave84"] {
+  --c-clock: #fe4fa4; --c-glow: 0 0 26px rgba(254, 79, 164, 0.4);
+  --c-dots: #848bb1; --c-date: #f7f7f7; --c-temp: #f97e72;
+  --c-cond: #f7f7f7; --c-meta: #848bb1; --c-accent: #36f9f6;
+}
 </style>
 </head>
 <body>
@@ -309,6 +362,14 @@ body.glitch:not(.night) #shade { opacity: 0.4; }
       <path d="M3 18h18"/>
     </svg>
   </button>
+  <button id="themebtn" aria-label="Cycle color theme">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="1.6">
+      <circle cx="12" cy="12" r="9"/>
+      <circle cx="16.5" cy="9" r="1.4" fill="currentColor" stroke="none"/>
+      <circle cx="8" cy="10" r="1.4" fill="currentColor" stroke="none"/>
+      <circle cx="10.5" cy="15.5" r="1.4" fill="currentColor" stroke="none"/>
+    </svg>
+  </button>
 </div>
 
 <script>
@@ -325,6 +386,11 @@ body.glitch:not(.night) #shade { opacity: 0.4; }
   var CACHE_KEY = 'wallclock.weather.v1';
   var NIGHT_KEY = 'wallclock.night.v1';
   var GLITCH_KEY = 'wallclock.glitch.v1';
+  var THEME_KEY = 'wallclock.theme.v1';
+
+  // index 0 = default look; 1..10 = dark editor / shell schemes
+  var THEMES = ['dracula', 'nord', 'solarized-dark', 'monokai', 'one-dark',
+                'gruvbox', 'tokyo-night', 'catppuccin-mocha', 'rose-pine', 'synthwave84'];
 
   var weatherTimer = null;
   var cachedWeather = null;
@@ -548,6 +614,25 @@ body.glitch:not(.night) #shade { opacity: 0.4; }
     setGlitch(!document.body.classList.contains('glitch'));
   });
 
+  // ---------- color themes ----------
+
+  var themeBtn = el('themebtn');
+  var themeIndex = 0; // 0 = default, 1..THEMES.length
+
+  function applyTheme(i) {
+    themeIndex = ((i % (THEMES.length + 1)) + (THEMES.length + 1)) % (THEMES.length + 1);
+    if (themeIndex === 0) {
+      document.body.removeAttribute('data-theme');
+    } else {
+      document.body.setAttribute('data-theme', THEMES[themeIndex - 1]);
+    }
+    try { localStorage.setItem(THEME_KEY, String(themeIndex)); } catch (e) {}
+  }
+
+  themeBtn.addEventListener('click', function () {
+    applyTheme(themeIndex + 1);
+  });
+
   // ---------- boot ----------
 
   sizeClock();
@@ -556,6 +641,8 @@ body.glitch:not(.night) #shade { opacity: 0.4; }
   try {
     if (localStorage.getItem(NIGHT_KEY) === '1') setNight(true);
     if (localStorage.getItem(GLITCH_KEY) === '1') setGlitch(true);
+    var savedTheme = parseInt(localStorage.getItem(THEME_KEY), 10);
+    if (savedTheme >= 0 && savedTheme <= THEMES.length) applyTheme(savedTheme);
   } catch (e) {}
 
   var cached = loadStored();
