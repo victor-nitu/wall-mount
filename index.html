@@ -337,6 +337,10 @@ body.glitch:not(.night) #shade { opacity: 0.4; }
         <span class="s-lbl">Sunset</span>
         <span class="s-val" id="sunset">--:--</span>
       </div>
+      <div class="s-row">
+        <span class="s-lbl">Next</span>
+        <span class="s-val" id="nextev">--:--</span>
+      </div>
     </section>
   </header>
 
@@ -415,7 +419,7 @@ body.glitch:not(.night) #shade { opacity: 0.4; }
   var hhEl = el('hh'), mmEl = el('mm'), ssEl = el('ss');
   var dateEl = el('date'), clockEl = el('clock');
   var wTempEl = el('w-temp'), wMetaEl = el('w-meta'), wIconEl = el('w-icon');
-  var sunriseEl = el('sunrise'), sunsetEl = el('sunset');
+  var sunriseEl = el('sunrise'), sunsetEl = el('sunset'), nextEl = el('nextev');
 
   function pad(n) { return n < 10 ? '0' + n : '' + n; }
 
@@ -436,6 +440,7 @@ body.glitch:not(.night) #shade { opacity: 0.4; }
       dateEl.textContent = ds;
       applySun(); // new day -> re-evaluate sunrise/sunset
     }
+    renderNext(now);
   }
 
   function sizeClock() {
@@ -501,6 +506,56 @@ body.glitch:not(.night) #shade { opacity: 0.4; }
     }
     if (sr) sunriseEl.textContent = sr;
     if (ss) sunsetEl.textContent = ss;
+    nextEventDate = computeNextEvent(sr, ss);
+  }
+
+  // ---------- next sunrise / sunset countdown ----------
+
+  var nextEventDate = null;
+
+  function atTime(day, hm) {
+    var p = hm.split(':');
+    return new Date(day.getFullYear(), day.getMonth(), day.getDate(), parseInt(p[0], 10), parseInt(p[1], 10), 0, 0);
+  }
+
+  function computeNextEvent(sr, ss) {
+    var now = new Date();
+    if (sr) {
+      var riseToday = atTime(now, sr);
+      if (now < riseToday) return riseToday; // before today's sunrise
+    }
+    if (ss) {
+      var setToday = atTime(now, ss);
+      if (now < setToday) return setToday; // between sunrise and sunset
+    }
+    // past sunset: next is tomorrow's sunrise; NOAA computes it with
+    // tomorrow's (~1-2 min different) time rather than reusing today's
+    if (sr) {
+      var tmr = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+      var f = computedSun(tmr);
+      if (f.sunrise) return atTime(tmr, f.sunrise);
+      return new Date(atTime(now, sr).getTime() + 24 * 60 * 60 * 1000);
+    }
+    return null;
+  }
+
+  function renderNext(now) {
+    if (!nextEventDate) {
+      nextEl.textContent = '--:--';
+      return;
+    }
+    var left = nextEventDate - now;
+    if (left <= 0) {
+      applySun(); // crossed into the event: recompute for the new window
+      left = nextEventDate ? nextEventDate - now : 0;
+    }
+    if (!nextEventDate) {
+      nextEl.textContent = '--:--';
+      return;
+    }
+    var totalMin = Math.floor(left / 60000);
+    var H = Math.floor(totalMin / 60);
+    nextEl.textContent = (H < 10 ? '0' + H : '' + H) + ':' + pad(totalMin % 60);
   }
 
   // ---------- weather (meteoblue via reader proxy, hourly) ----------
