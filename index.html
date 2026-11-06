@@ -54,8 +54,9 @@ header {
   margin-right: 2.2vmin;
 }
 .w-temp {
-  font-size: 6.5vmin;
-  font-weight: 300;
+  font-family: 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+  font-size: 13vmin;
+  font-weight: bold;
   line-height: 1;
   letter-spacing: 0.02em;
 }
@@ -370,7 +371,13 @@ body.night #dim { opacity: 0.1; border-color: rgba(255,255,255,0.12); }
       svg = svg.split('stroke:#023557').join('stroke:rgba(0,0,0,0)')
                .split('stroke:#062845').join('stroke:rgba(0,0,0,0)')
                .split('#023557').join('#9ec9f2');
-      wIconEl.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+      var uri;
+      try {
+        uri = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svg)));
+      } catch (e) {
+        uri = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+      }
+      wIconEl.src = uri;
     }).catch(function () {
       wIconEl.src = url;
     });
