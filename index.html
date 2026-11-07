@@ -441,6 +441,7 @@ body.glitch:not(.night) #shade { opacity: 0.4; }
       dateEl.textContent = ds;
       applySun(); // new day -> re-evaluate sunrise/sunset
     }
+    autoNight(now);
     renderNext(now);
   }
 
@@ -673,6 +674,22 @@ body.glitch:not(.night) #shade { opacity: 0.4; }
     try { localStorage.setItem(NIGHT_KEY, on ? '1' : '0'); } catch (e) {}
   }
 
+  // automatic schedule: dim at 22:00, bright again at 07:00 local time.
+  // The scheduled state is applied on load and on each boundary crossing;
+  // a manual tap in between overrides it until the next boundary.
+  var AUTO_ON_HOUR = 22;
+  var AUTO_OFF_HOUR = 7;
+  var lastAutoNight = null;
+
+  function autoNight(now) {
+    var h = now.getHours();
+    var on = h >= AUTO_ON_HOUR || h < AUTO_OFF_HOUR;
+    if (on !== lastAutoNight) {
+      lastAutoNight = on;
+      setNight(on);
+    }
+  }
+
   dimBtn.addEventListener('click', function () {
     setNight(!document.body.classList.contains('night'));
   });
@@ -718,7 +735,7 @@ body.glitch:not(.night) #shade { opacity: 0.4; }
   window.addEventListener('resize', sizeClock);
 
   try {
-    if (localStorage.getItem(NIGHT_KEY) === '1') setNight(true);
+    // no manual night restore: the 22:00-07:00 schedule decides on load
     if (localStorage.getItem(GLITCH_KEY) === '1') setGlitch(true);
     var savedTheme = parseInt(localStorage.getItem(THEME_KEY), 10);
     if (savedTheme >= 0 && savedTheme <= THEMES.length) applyTheme(savedTheme);
